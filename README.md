@@ -252,6 +252,122 @@ int grundy(int n) {
     return g;
 }
 
+//----------------------------------------- Disjoint Set Union -------------------------------------------------//
+
+class disjointSet {
+    private:
+    vector<int> rank, size, parent;
+    public:
+    disjointSet(int n) {
+        rank.resize(n+1, 0);
+        size.resize(n+1);
+        parent.resize(n+1);
+        for(int i = 0; i < n+1; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+    int findUPar(int node) 
+    {
+        if(node == parent[node]) return node;
+
+        return parent[node] = findUPar(parent[node]);
+    }
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+
+        if(ulp_u == ulp_v) return;
+
+        if(rank[ulp_u] < rank[ulp_v])
+        {
+            parent[ulp_u] = ulp_v;
+        }
+        else if(rank[ulp_u] > rank[ulp_v])
+        {
+            parent[ulp_v] = ulp_u;
+        }
+        else
+        {
+            parent[ulp_v] = ulp_u;
+        rank[u]++;
+        }
+    }
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+
+        if(ulp_u == ulp_v) return;
+
+        if(size[ulp_u] < size[ulp_v])
+        {
+            parent[ulp_u] = ulp_v;
+            size[ulp_u] += size[ulp_v];
+        }
+        else
+        {
+            parent[ulp_v] = ulp_u;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+};
+
+//----------------------------------------- Binary Exponentiation -------------------------------------------------//
+
+long long binpow(long long a, long long b) {
+    long long res = 1;
+    while (b > 0) {
+        if (b & 1)
+            res = res * a;
+        a = a * a;
+        b >>= 1;
+    }
+    return res;
+}
+
+//----------------------------------------- Binary Exponentiation with modulo -------------------------------------------------//
+
+long long binpow(long long a, long long b, long long m) {
+    a %= m;
+    long long res = 1;
+    while (b > 0) {
+        if (b & 1)
+            res = res * a % m;
+        a = a * a % m;
+        b >>= 1;
+    }
+    return res;
+}
+
+//----------------------------------------- MEX -------------------------------------------------//
+
+//find the minimal non-negative element that is not present in the array 
+
+int mex(vector<int> const& A) {
+    static bool used[MAX_N+1] = { 0 };
+
+    // mark the given numbers
+    for (int x : A) {
+        if (x <= MAX_N)
+            used[x] = true;
+    }
+
+    // find the mex
+    int result = 0;
+    while (used[result])
+        ++result;
+
+    // clear the array again
+    for (int x : A) {
+        if (x <= MAX_N)
+            used[x] = false;
+    }
+
+    return result;
+}
+
 void Solve() {
     // Add code to solve the problem here
 }
