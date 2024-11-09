@@ -533,7 +533,7 @@ int mex(vector<int> const& A) {
 }
 ```
 
-### Max Subarray Sum
+### Max Subarray Sum (Kadane's Algorithm)
 
 ```cpp
 int SubarrayMax(vector<int> arr)
@@ -548,3 +548,45 @@ int SubarrayMax(vector<int> arr)
 }
 ```
 
+### Sliding Window Maximum
+
+```cpp
+vector<int> slidingWindowMaximum(vector<int>& nums, int k) {
+    vector<int> result;
+    deque<int> dq; 
+    for (int i = 0; i < nums.size(); ++i) {
+        if (!dq.empty() && dq.front() <= i - k) {
+            dq.pop_front();
+        }
+        while (!dq.empty() && nums[dq.back()] <= nums[i]) {
+            dq.pop_back();
+        }
+        dq.push_back(i);
+        if (i >= k - 1) {
+            result.push_back(nums[dq.front()]);
+        }
+    }
+    return result;
+}
+```
+
+
+### Hamming Distance
+
+```cpp
+// For integers (Faster)
+int hamming(int a, int b) {
+    return __builtin_popcount(a^b);
+}
+
+// For Strings
+int hamming(string a, string b) {
+    int d = 0;
+    for (int i = 0; i < a.size(); i++) {
+        if (a[i] != b[i]) d++;
+    }
+    return d;
+}
+
+
+```
