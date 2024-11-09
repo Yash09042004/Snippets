@@ -1,18 +1,17 @@
-# Snippets
 
 # Competitive Programming Templates
 
+### Constants
 ```cpp
-
-#include <bits/stdc++.h>
-using namespace std;
-
 #define ll long long
+#define pi 3.14159265358979323846
 const ll MOD = 1e9 + 7;
 const int MAXN = 1e6 + 5;
+```
 
-//--------------------------------------------------- Prime Checking and Sieve ----------------------------------------//
+### Prime Checking, Factorization and Sieve 
 
+```cpp
 // Check if a number is prime
 template <class T> bool isPrime(T n) {
     if (n <= 1) return false;
@@ -35,6 +34,43 @@ void sieve() {
     }
 }
 
+// Sieve of Eratosthenes(Set)
+set<int> sieveOfEratosthenes(int lower, int upper) {
+    if (upper < 2) return {};lower = max(lower, 2);
+    vector<bool> isPrime(upper + 1, true);
+    isPrime[0] = isPrime[1] = false;
+    for (int p = 2; p * p <= upper; p++) {
+        if (isPrime[p]) {
+            for (int multiple = p * p; multiple <= upper; multiple += p) { isPrime[multiple] = false; }
+        }
+    }
+    set<int> primeSet;
+    for (int num = lower; num <= upper; num++) {
+        if (isPrime[num]) {
+            primeSet.insert(num);
+        }
+    }
+    return primeSet;
+}
+
+// Prime Factorization
+map<int, int> primeFactorization(int n, set<int>& primeSet) {
+    std::map<int, int> factors;
+    for (int prime : primeSet) {
+        if (prime * prime > n) break;  
+        while (n % prime == 0) {
+            factors[prime]++;
+            n /= prime;
+        }
+    }
+    if (n > 1) {
+        factors[n] = 1;
+    }
+    return factors;
+}
+
+
+
 // Smallest Prime Factor (SPF) Sieve
 vector<ll> spf(MAXN);
 void spfsieve() {
@@ -49,9 +85,9 @@ void spfsieve() {
         }
     }
 }
-
-//--------------------------------------------------- Range XOR ------------------------------------------------------//
-
+```
+### Range XOR 
+```cpp
 ll xor_upto(ll n) {
     if (n % 4 == 0) return n;
     if (n % 4 == 1) return 1;
@@ -62,9 +98,9 @@ ll xor_upto(ll n) {
 ll range_xor(ll l, ll r) {
     return xor_upto(r) ^ xor_upto(l - 1);
 }
-
-//--------------------------------------------- Modular Arithmetic ----------------------------------------------------//
-
+```
+### Modular Arithmetic
+```cpp
 ll mod_add(ll a, ll b, ll m) { return (((a + b) % m) + m) % m; }
 ll mod_sub(ll a, ll b, ll m) { return (((a - b) % m) + m) % m; }
 ll mod_mul(ll a, ll b, ll m) { return (((a * b) % m) + m) % m; }
@@ -82,9 +118,10 @@ template <typename T> T binpowmod(T base, T exp, T mod) {
     }
     return result;
 }
+```
 
-//----------------------------------------- Combinatorics and Factorials ---------------------------------------------//
-
+### Combinatorics and Factorials 
+```cpp
 vector<ll> fact(MAXN), inv_fact(MAXN);
 void factorial(ll mod) {
     fact[0] = inv_fact[0] = 1;
@@ -98,9 +135,10 @@ ll nCr(ll n, ll r, ll mod) {
     if (r > n || r < 0) return 0;
     return fact[n] * inv_fact[r] % mod * inv_fact[n - r] % mod;
 }
+```
 
-//-------------------------------------------- Search Algorithms ------------------------------------------------------//
-
+### Search Algorithms
+```cpp
 // Binary Search
 template <typename T>
 int binary_search(const vector<T>& arr, T target) {
@@ -125,9 +163,9 @@ bool two_pointer_sum(const vector<int>& arr, int target) {
     }
     return false;
 }
-
-//------------------------------------------- Greedy Algorithms -------------------------------------------------------//
-
+```
+### Greedy Algorithms 
+```cpp
 // Fractional Knapsack Problem
 bool cmp(pair<int, int> a, pair<int, int> b) {
     return (double)a.first / a.second > (double)b.first / b.second;
@@ -147,9 +185,10 @@ double fractional_knapsack(vector<pair<int, int>>& items, int W) {
     }
     return total_value;
 }
+```
+### Graph Algorithms 
 
-//------------------------------------------- Graph Algorithms --------------------------------------------------------//
-
+```cpp
 // Breadth-First Search
 vector<int> adj[MAXN];
 vector<bool> visited(MAXN, false);
@@ -217,9 +256,9 @@ template <typename T = int> struct Dijkstra {
         return dist;
     }
 };
-
-//----------------------------------------- Big Number Multiplication -------------------------------------------------//
-
+```
+### Big Number Multiplication 
+```cpp
 // Function to multiply two large numbers represented as strings
 string multiplyBigNumbers(const string& num1, const string& num2) {
     if (num1 == "0" || num2 == "0") return "0";
@@ -252,8 +291,10 @@ int grundy(int n) {
     return g;
 }
 
-//----------------------------------------- Disjoint Set Union -------------------------------------------------//
+```
+### Disjoint Set Union 
 
+```cpp
 class disjointSet {
     private:
     vector<int> rank, size, parent;
@@ -314,7 +355,10 @@ class disjointSet {
     }
 };
 
-//----------------------------------------- Binary Exponentiation -------------------------------------------------//
+``` 
+
+### Binary Exponentiation 
+```cpp
 
 long long binpow(long long a, long long b) {
     long long res = 1;
@@ -327,7 +371,7 @@ long long binpow(long long a, long long b) {
     return res;
 }
 
-//----------------------------------------- Binary Exponentiation with modulo -------------------------------------------------//
+// -------------------------- With Modulo ----------------------
 
 long long binpow(long long a, long long b, long long m) {
     a %= m;
@@ -340,8 +384,10 @@ long long binpow(long long a, long long b, long long m) {
     }
     return res;
 }
+```
+### MEX 
 
-//----------------------------------------- MEX -------------------------------------------------//
+```cpp
 
 //find the minimal non-negative element that is not present in the array 
 
@@ -367,7 +413,20 @@ int mex(vector<int> const& A) {
 
     return result;
 }
+```
 
-void Solve() {
-    // Add code to solve the problem here
+### Max Subarray Sum
+
+```cpp
+int SubarrayMax(vector<int> arr)
+{
+    int best = 0, sum = 0;
+    for (int k = 0; k < arr.size(); k++)
+    {
+        sum = max(arr[k], sum + arr[k]);
+        best = max(best, sum);
+    }
+    return best;
 }
+```
+
