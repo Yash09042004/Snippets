@@ -135,6 +135,91 @@ ll nCr(ll n, ll r, ll mod) {
     if (r > n || r < 0) return 0;
     return fact[n] * inv_fact[r] % mod * inv_fact[n - r] % mod;
 }
+
+
+// Factorial class to performs operations on Factorials without overflow 
+class Factorial{
+    map<int, int> primeFactorization(int n, set<int>& primeSet) {
+        std::map<int, int> factors;
+        for (int prime : primeSet) {
+            if (prime * prime > n) break;  
+            while (n % prime == 0) {
+                factors[prime]++;
+                n /= prime;
+            }
+        }
+        if (n > 1) {
+            factors[n] = 1;
+        }
+        return factors;
+    }
+int n;
+map<int,int> primeFactors;
+set<int> primeSet;
+public:
+    Factorial(int n, set<int> primeSet ){
+        this->n = n;
+        for( int i = 2 ; i<=n ; i++ ){
+            map<int,int> currentFactors = primeFactorization(i,primeSet);
+            for( auto it : currentFactors){
+                primeFactors[it.first] += it.second;
+            }
+        }
+    }
+    Factorial( map<int, int> primeFactors ){
+        this->primeFactors = primeFactors;
+    }
+    ll getValue(){
+        ll result = 1;
+        for( auto it : primeFactors ){
+            result *= pow(it.first,it.second);
+        }
+        return result;
+    }
+
+    map<int,int> getMap(){
+        return this->primeFactors;
+    }
+
+    ll operator+(Factorial m){
+        return this->getValue()+m.getValue();
+    }
+    ll operator+(int m){
+        return this->getValue()+m;
+    }
+    ll operator+(ll m){
+        return this->getValue()+m;
+    }
+    ll operator-(Factorial m){
+        return this->getValue()-m.getValue();
+    }
+    ll operator-(int m){
+        return this->getValue()-m;
+    }
+    ll operator-(ll m){
+        return this->getValue()-m;
+    }
+    Factorial operator*(Factorial m){
+        map<int,int> ans;
+        for( auto it : m.primeFactors ){
+            ans[it.first] += it.second;
+        }
+        for( auto it : this->primeFactors ){
+            ans[it.first] += it.second;
+        }
+        return ans;
+    }
+    Factorial operator/(Factorial m){
+        map<int,int> ans;
+        for( auto it : m.primeFactors ){
+            ans[it.first] -= it.second;
+        }
+        for( auto it : this->primeFactors ){
+            ans[it.first] += it.second;
+        }
+        return ans;
+    }
+};
 ```
 
 ### Search Algorithms
