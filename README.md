@@ -137,6 +137,7 @@ ll nCr(ll n, ll r, ll mod) {
 }
 
 
+
 // Factorial class to performs operations on Factorials without overflow 
 class Factorial{
     map<int, int> primeFactorization(int n, set<int>& primeSet) {
@@ -221,6 +222,38 @@ public:
     }
 };
 ```
+### Subset generation
+```cpp
+vector<vector<int>> generateSubsets(const vector<int>& set) {
+    int n = set.size();
+    vector<vector<int>> superset;
+    for (int i = 0; i < (1 << n); ++i) {
+        vector<int> subset;
+        for (int j = 0; j < n; ++j) {
+            if (i & (1 << j)) {
+                subset.push_back(set[j]);
+            }
+        }
+        superset.push_back(subset);
+    }
+    return superset;
+}
+
+```
+
+### Generate Permutations
+
+```cpp
+vector<vector<int>> generatePermutations(vector<int> set) {
+    vector<vector<int>> allPermutations;
+    sort(set.begin(), set.end()); // Sort only necessary for lexicographical order
+    do {
+        allPermutations.push_back(set);
+    } while (next_permutation(set.begin(), set.end()));
+    return allPermutations;
+}
+```
+
 
 ### Search Algorithms
 ```cpp
