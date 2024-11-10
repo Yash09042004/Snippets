@@ -587,6 +587,94 @@ int hamming(string a, string b) {
     }
     return d;
 }
+```
 
+//----------------------------------------- KMP -------------------------------------------------//
+
+```cpp
+class Solution
+{
+    public:
+        // Function to compute the LPS (Longest Proper Prefix which is also Suffix) array
+        void computeLPS(string pattern, vector<int>& lps) {
+            int M = pattern.length();
+            int len = 0; // Length of the previous longest prefix & suffix
+        
+            lps[0] = 0; // Because there is no proper suffix and prefix of pattern[0..0]
+        
+            int i = 1;
+            while (i < M) {
+                if (pattern[i] == pattern[len]) {
+                    len++;
+                    lps[i] = len;
+                    i++;
+                } else {
+                    if (len != 0) {
+                        len = lps[len - 1]; //You can also write, len = len-1;
+                    } else {
+                        lps[i] = 0;
+                        i++;
+                    }
+                }
+            }
+        }
+        
+        vector <int> search(string pat, string txt) {
+            int N = txt.length();
+            int M = pat.length();
+            vector<int> result;
+            
+            // Create an LPS array to store the longest proper prefix which is also a suffix
+            //lps[i] = the longest proper prefix of pat[0..i] which is also a suffix of pat[0..i]. 
+            vector<int> lps(M, 0);
+            computeLPS(pat, lps);
+        
+            int i = 0; // Index for text
+            int j = 0; // Index for pattern
+        
+            while (i < N) {
+                if (pat[j] == txt[i]) {
+                    i++;
+                    j++;
+                }
+        
+                if (j == M) {
+                    result.push_back(i-j+1); //Pattern found at index i-j+1 (If you have to return 1 Based indexing, that's why added + 1)
+                    j = lps[j - 1];
+                } else if (i < N && pat[j] != txt[i]) {
+                    if (j != 0) {
+                        j = lps[j - 1];
+                    } else {
+                        i++;
+                    }
+                }
+            }
+            
+            return result;
+        }
+     
+};
+```
+
+//----------------------------------------- PnC -------------------------------------------------//
+
+<!-- (a) The number of totally different straight lines formed by joining n points on a plane of which m(<n) are
+collinear is nC2 – mC2 + 1.
+(b) The number of total triangles formed by joining n points on a plane of which m(<n) are collinear is nC3 – mC3.
+(c) The number of diagonals in a polygon of n sides is nC2 – n.
+(d) If m parallel lines in a plane are intersected by a family of other n parallel lines. Then total number of
+parallelograms so formed are mC2 × nC2.
+(e) Given n points on the circumference of a circle, then
+the number of straight lines between these points are nC2
+the number of triangles between these points are nC3
+the number of quadrilaterals between these points are nC4
+(f) If n straight lines are drawn in the plane such that no two lines are parallel and no three lines are concurrent.
+Then, the number of parts into which these lines divide the plane is = 1 + Sn
+ -->
+```cpp
+
+void Solve() {
+    // Add code to solve the problem here
+}
 
 ```
