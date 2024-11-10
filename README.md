@@ -1,18 +1,17 @@
-# Snippets
 
 # Competitive Programming Templates
 
+### Constants
 ```cpp
-
-#include <bits/stdc++.h>
-using namespace std;
-
 #define ll long long
+#define pi 3.14159265358979323846
 const ll MOD = 1e9 + 7;
 const int MAXN = 1e6 + 5;
+```
 
-//--------------------------------------------------- Prime Checking and Sieve ----------------------------------------//
+### Prime Checking, Factorization and Sieve 
 
+```cpp
 // Check if a number is prime
 template <class T> bool isPrime(T n) {
     if (n <= 1) return false;
@@ -35,6 +34,43 @@ void sieve() {
     }
 }
 
+// Sieve of Eratosthenes(Set)
+set<int> sieveOfEratosthenes(int lower, int upper) {
+    if (upper < 2) return {};lower = max(lower, 2);
+    vector<bool> isPrime(upper + 1, true);
+    isPrime[0] = isPrime[1] = false;
+    for (int p = 2; p * p <= upper; p++) {
+        if (isPrime[p]) {
+            for (int multiple = p * p; multiple <= upper; multiple += p) { isPrime[multiple] = false; }
+        }
+    }
+    set<int> primeSet;
+    for (int num = lower; num <= upper; num++) {
+        if (isPrime[num]) {
+            primeSet.insert(num);
+        }
+    }
+    return primeSet;
+}
+
+// Prime Factorization
+map<int, int> primeFactorization(int n, set<int>& primeSet) {
+    std::map<int, int> factors;
+    for (int prime : primeSet) {
+        if (prime * prime > n) break;  
+        while (n % prime == 0) {
+            factors[prime]++;
+            n /= prime;
+        }
+    }
+    if (n > 1) {
+        factors[n] = 1;
+    }
+    return factors;
+}
+
+
+
 // Smallest Prime Factor (SPF) Sieve
 vector<ll> spf(MAXN);
 void spfsieve() {
@@ -49,9 +85,9 @@ void spfsieve() {
         }
     }
 }
-
-//--------------------------------------------------- Range XOR ------------------------------------------------------//
-
+```
+### Range XOR 
+```cpp
 ll xor_upto(ll n) {
     if (n % 4 == 0) return n;
     if (n % 4 == 1) return 1;
@@ -62,9 +98,9 @@ ll xor_upto(ll n) {
 ll range_xor(ll l, ll r) {
     return xor_upto(r) ^ xor_upto(l - 1);
 }
-
-//--------------------------------------------- Modular Arithmetic ----------------------------------------------------//
-
+```
+### Modular Arithmetic
+```cpp
 ll mod_add(ll a, ll b, ll m) { return (((a + b) % m) + m) % m; }
 ll mod_sub(ll a, ll b, ll m) { return (((a - b) % m) + m) % m; }
 ll mod_mul(ll a, ll b, ll m) { return (((a * b) % m) + m) % m; }
@@ -82,9 +118,10 @@ template <typename T> T binpowmod(T base, T exp, T mod) {
     }
     return result;
 }
+```
 
-//----------------------------------------- Combinatorics and Factorials ---------------------------------------------//
-
+### Combinatorics and Factorials 
+```cpp
 vector<ll> fact(MAXN), inv_fact(MAXN);
 void factorial(ll mod) {
     fact[0] = inv_fact[0] = 1;
@@ -99,8 +136,127 @@ ll nCr(ll n, ll r, ll mod) {
     return fact[n] * inv_fact[r] % mod * inv_fact[n - r] % mod;
 }
 
-//-------------------------------------------- Search Algorithms ------------------------------------------------------//
 
+
+// Factorial class to performs operations on Factorials without overflow 
+class Factorial{
+    map<int, int> primeFactorization(int n, set<int>& primeSet) {
+        std::map<int, int> factors;
+        for (int prime : primeSet) {
+            if (prime * prime > n) break;  
+            while (n % prime == 0) {
+                factors[prime]++;
+                n /= prime;
+            }
+        }
+        if (n > 1) {
+            factors[n] = 1;
+        }
+        return factors;
+    }
+int n;
+map<int,int> primeFactors;
+set<int> primeSet;
+public:
+    Factorial(int n, set<int> primeSet ){
+        this->n = n;
+        for( int i = 2 ; i<=n ; i++ ){
+            map<int,int> currentFactors = primeFactorization(i,primeSet);
+            for( auto it : currentFactors){
+                primeFactors[it.first] += it.second;
+            }
+        }
+    }
+    Factorial( map<int, int> primeFactors ){
+        this->primeFactors = primeFactors;
+    }
+    ll getValue(){
+        ll result = 1;
+        for( auto it : primeFactors ){
+            result *= pow(it.first,it.second);
+        }
+        return result;
+    }
+
+    map<int,int> getMap(){
+        return this->primeFactors;
+    }
+
+    ll operator+(Factorial m){
+        return this->getValue()+m.getValue();
+    }
+    ll operator+(int m){
+        return this->getValue()+m;
+    }
+    ll operator+(ll m){
+        return this->getValue()+m;
+    }
+    ll operator-(Factorial m){
+        return this->getValue()-m.getValue();
+    }
+    ll operator-(int m){
+        return this->getValue()-m;
+    }
+    ll operator-(ll m){
+        return this->getValue()-m;
+    }
+    Factorial operator*(Factorial m){
+        map<int,int> ans;
+        for( auto it : m.primeFactors ){
+            ans[it.first] += it.second;
+        }
+        for( auto it : this->primeFactors ){
+            ans[it.first] += it.second;
+        }
+        return ans;
+    }
+    Factorial operator/(Factorial m){
+        map<int,int> ans;
+        for( auto it : m.primeFactors ){
+            ans[it.first] -= it.second;
+        }
+        for( auto it : this->primeFactors ){
+            ans[it.first] += it.second;
+        }
+        return ans;
+    }
+};
+```
+### Subset generation
+```cpp
+vector<vector<int>> generateSubsets(const vector<int>& set) {
+    int n = set.size();
+    vector<vector<int>> superset;
+    for (int i = 0; i < (1 << n); ++i) {
+        vector<int> subset;
+        for (int j = 0; j < n; ++j) {
+            if (i & (1 << j)) {
+                subset.push_back(set[j]);
+            }
+        }
+        superset.push_back(subset);
+    }
+    return superset;
+}
+
+```
+
+### Generate Permutations
+
+```cpp
+vector<vector<int>> generatePermutations(vector<int> set) {
+    vector<vector<int>> allPermutations;
+    sort(set.begin(), set.end()); // Sort only necessary for lexicographical order
+    do {
+        allPermutations.push_back(set);
+    } while (next_permutation(set.begin(), set.end()));
+    return allPermutations;
+}
+```
+
+
+### Search Algorithms
+```cpp
 // Binary Search
 template <typename T>
 int binary_search(const vector<T>& arr, T target) {
@@ -125,9 +281,9 @@ bool two_pointer_sum(const vector<int>& arr, int target) {
     }
     return false;
 }
-
-//------------------------------------------- Greedy Algorithms -------------------------------------------------------//
-
+```
+### Greedy Algorithms 
+```cpp
 // Fractional Knapsack Problem
 bool cmp(pair<int, int> a, pair<int, int> b) {
     return (double)a.first / a.second > (double)b.first / b.second;
@@ -147,9 +303,10 @@ double fractional_knapsack(vector<pair<int, int>>& items, int W) {
     }
     return total_value;
 }
+```
+### Graph Algorithms 
 
-//------------------------------------------- Graph Algorithms --------------------------------------------------------//
-
+```cpp
 // Breadth-First Search
 vector<int> adj[MAXN];
 vector<bool> visited(MAXN, false);
@@ -217,9 +374,9 @@ template <typename T = int> struct Dijkstra {
         return dist;
     }
 };
-
-//----------------------------------------- Big Number Multiplication -------------------------------------------------//
-
+```
+### Big Number Multiplication 
+```cpp
 // Function to multiply two large numbers represented as strings
 string multiplyBigNumbers(const string& num1, const string& num2) {
     if (num1 == "0" || num2 == "0") return "0";
@@ -252,8 +409,10 @@ int grundy(int n) {
     return g;
 }
 
-//----------------------------------------- Disjoint Set Union -------------------------------------------------//
+```
+### Disjoint Set Union 
 
+```cpp
 class disjointSet {
     private:
     vector<int> rank, size, parent;
@@ -314,7 +473,10 @@ class disjointSet {
     }
 };
 
-//----------------------------------------- Binary Exponentiation -------------------------------------------------//
+``` 
+
+### Binary Exponentiation 
+```cpp
 
 long long binpow(long long a, long long b) {
     long long res = 1;
@@ -327,7 +489,7 @@ long long binpow(long long a, long long b) {
     return res;
 }
 
-//----------------------------------------- Binary Exponentiation with modulo -------------------------------------------------//
+// -------------------------- With Modulo ----------------------
 
 long long binpow(long long a, long long b, long long m) {
     a %= m;
@@ -340,8 +502,10 @@ long long binpow(long long a, long long b, long long m) {
     }
     return res;
 }
+```
+### MEX 
 
-//----------------------------------------- MEX -------------------------------------------------//
+```cpp
 
 //find the minimal non-negative element that is not present in the array 
 
@@ -367,9 +531,67 @@ int mex(vector<int> const& A) {
 
     return result;
 }
+```
+
+### Max Subarray Sum (Kadane's Algorithm)
+
+```cpp
+int SubarrayMax(vector<int> arr)
+{
+    int best = 0, sum = 0;
+    for (int k = 0; k < arr.size(); k++)
+    {
+        sum = max(arr[k], sum + arr[k]);
+        best = max(best, sum);
+    }
+    return best;
+}
+```
+
+### Sliding Window Maximum
+
+```cpp
+vector<int> slidingWindowMaximum(vector<int>& nums, int k) {
+    vector<int> result;
+    deque<int> dq; 
+    for (int i = 0; i < nums.size(); ++i) {
+        if (!dq.empty() && dq.front() <= i - k) {
+            dq.pop_front();
+        }
+        while (!dq.empty() && nums[dq.back()] <= nums[i]) {
+            dq.pop_back();
+        }
+        dq.push_back(i);
+        if (i >= k - 1) {
+            result.push_back(nums[dq.front()]);
+        }
+    }
+    return result;
+}
+```
+
+
+### Hamming Distance
+
+```cpp
+// For integers (Faster)
+int hamming(int a, int b) {
+    return __builtin_popcount(a^b);
+}
+
+// For Strings
+int hamming(string a, string b) {
+    int d = 0;
+    for (int i = 0; i < a.size(); i++) {
+        if (a[i] != b[i]) d++;
+    }
+    return d;
+}
+```
 
 //----------------------------------------- KMP -------------------------------------------------//
 
+```cpp
 class Solution
 {
     public:
@@ -432,10 +654,11 @@ class Solution
         }
      
 };
+```
 
 //----------------------------------------- PnC -------------------------------------------------//
 
-(a) The number of totally different straight lines formed by joining n points on a plane of which m(<n) are
+<!-- (a) The number of totally different straight lines formed by joining n points on a plane of which m(<n) are
 collinear is nC2 – mC2 + 1.
 (b) The number of total triangles formed by joining n points on a plane of which m(<n) are collinear is nC3 – mC3.
 (c) The number of diagonals in a polygon of n sides is nC2 – n.
@@ -447,7 +670,11 @@ the number of triangles between these points are nC3
 the number of quadrilaterals between these points are nC4
 (f) If n straight lines are drawn in the plane such that no two lines are parallel and no three lines are concurrent.
 Then, the number of parts into which these lines divide the plane is = 1 + Sn
+ -->
+```cpp
 
 void Solve() {
     // Add code to solve the problem here
 }
+
+```
