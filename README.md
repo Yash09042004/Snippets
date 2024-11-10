@@ -655,6 +655,51 @@ class Solution
      
 };
 ```
+```cpp
+//------------------------z-algo---------------------
+vector<int> z_function(string s) {
+    int n = (int) s.length();
+    vector<int> z(n);
+    for (int i = 1, l = 0, r = 0; i < n; ++i) {
+        if (i <= r)
+            z[i] = min(r - i + 1, z[i - l]);
+        while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+            ++z[i];
+        if (i + z[i] - 1 > r)
+            l = i, r = i + z[i] - 1;
+    }
+    return z;
+}
+//--------------------------------------------------- Convex Hull ----------------------------------------//
+
+struct Point {
+    ll x, y;
+    bool operator<(const Point& p) const {
+        return tie(x, y) < tie(p.x, p.y);
+    }
+};
+
+ll cross(const Point& O, const Point& A, const Point& B) {
+    return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
+}
+
+vector<Point> convex_hull(vector<Point>& P) {
+    int n = P.size(), k = 0;
+    if (n == 1) return P;
+    vector<Point> H(2 * n);
+    sort(P.begin(), P.end());
+    for (int i = 0; i < n; ++i) {
+        while (k >= 2 && cross(H[k - 2], H[k - 1], P[i]) <= 0) k--;
+        H[k++] = P[i];
+    }
+    for (int i = n - 1, t = k + 1; i > 0; --i) {
+        while (k >= t && cross(H[k - 2], H[k - 1], P[i - 1]) <= 0) k--;
+        H[k++] = P[i - 1];
+    }
+    H.resize(k - 1);
+    return H;
+}
+```
 
 //----------------------------------------- PnC -------------------------------------------------//
 
